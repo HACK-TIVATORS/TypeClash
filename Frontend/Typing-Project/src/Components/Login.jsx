@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4 text-white">
       <div className="bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-md">
@@ -30,6 +32,8 @@ function Login() {
 
           <button
             type="submit"
+            onClick={() => navigate("/cardsPage")}
+
             className="w-full bg-blue-600 hover:bg-blue-700 transition text-white py-3 rounded font-semibold"
           >
             Login
