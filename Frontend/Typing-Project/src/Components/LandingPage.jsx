@@ -43,11 +43,6 @@ export default function LandingPage() {
             victory in the ultimate keyboard showdown.
           </p>
         </div>
-
-        <div className="w-1/2 flex justify-center items-center">
-          {/* Empty placeholder area for future content */}
-          <div className="h-32 w-3/4 bg-purple-500/20 rounded-xl border border-purple-300/30"></div>
-        </div>
       </div>
     </div>
   );
