@@ -1,9 +1,12 @@
 package com.rivalist.typeclash_backend.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,42 +18,49 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // Configure CORS
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:5173")); // React app
+                    config.setAllowedOrigins(List.of("http://localhost:5173"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
-                    config.setAllowCredentials(true); // Important for cookies
+                    config.setAllowCredentials(true);
                     return config;
                 }))
-                .csrf(csrf -> csrf.disable())
+
+                // Disable CSRF protection
+                .csrf(AbstractHttpConfigurer::disable)
+
+                // Permit all requests
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/logout", "/users/register").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/user").authenticated()
+                        .anyRequest().permitAll()
                 )
+                .httpBasic(Customizer.withDefaults())
+                // Optional: Keep form login configuration if needed
                 .formLogin(form -> form
-//                        .loginPage("http://localhost:5173/login")
-                        .loginProcessingUrl("/login") // API called from frontend
-                        .successHandler((request, response, authentication) -> {
-                            response.setStatus(200); // On successful login
-                        })
-                        .failureHandler((request, response, exception) -> {
-                            response.sendError(401, "Invalid credentials");
-                        })
-                        .permitAll()
+                        .loginPage("http://localhost:5173/login")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/user", true)
+                        .failureUrl("http://localhost:5173/login?error=true")
                 )
+
+                // Optional: Keep logout configuration if needed
                 .logout(logout -> logout
                         .logoutUrl("/logout")
+                        .logoutSuccessUrl("http://localhost:5173/login")
                         .logoutSuccessHandler((request, response, authentication) -> {
-                            response.setStatus(200); // Notify frontend that logout succeeded
+                            response.setStatus(HttpServletResponse.SC_OK);
                         })
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
+                        .permitAll()
                 )
+
+                // Session management
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 );
