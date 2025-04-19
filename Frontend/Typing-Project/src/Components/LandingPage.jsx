@@ -1,6 +1,7 @@
- import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
+  const navigate = useNavigate();
   const fullText = "Prove Your Speed. Join The Typing Battle.";
 
   return (
@@ -10,10 +11,16 @@ export default function LandingPage() {
         <h1 className="text-3xl font-bold text-purple-400">TypeClash</h1>
         <div></div>
         <div className="flex flex-col gap-3">
-          <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-center transition">
+          <button
+            onClick={() => navigate("/login")}
+            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-center transition"
+          >
             Login
           </button>
-          <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-center transition">
+          <button
+            onClick={() => navigate("/signup")}
+            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-center transition"
+          >
             Sign Up
           </button>
         </div>
