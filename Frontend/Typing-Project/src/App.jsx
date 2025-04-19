@@ -5,6 +5,8 @@ import SignUp from "./Components/SignUp";
 import Login from "./Components/Login";
 import CardsPage from "./Components/CardsPage";
 import BattlePageCards from "./Components/BattlePageCards";
+import TypingBattleResult from "./Components/TypingBattleResult";
+
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
         <Route path="/login" element={<Login />} /> 
         <Route path="/cardsPage" element={<CardsPage />} />
         <Route path="/battlePage" element={<BattlePageCards />} />
+        <Route path="/result" element={<TypingBattleResult />} />
+
       </Routes>
     </Router>
     
