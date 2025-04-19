@@ -6,8 +6,9 @@ import Login from "./Components/Login";
 import CardsPage from "./Components/CardsPage";
 import BattlePageCards from "./Components/BattlePageCards";
 import TypingBattleResult from "./Components/TypingBattleResult";
-
 import TypingBattle from "./Components/TypingBattle";
+import CreateBattleRoom from "./Components/CreateBattleRoom";
+import JoinBattleRoom from "./Components/JoinBattleRoom";
 
 function App() {
   return (
@@ -19,6 +20,9 @@ function App() {
         <Route path="/cardsPage" element={<CardsPage />} />
         <Route path="/battlePage" element={<BattlePageCards />} />
         <Route path="/result" element={<TypingBattleResult />} />
+        <Route path="/battle-room" element={<CreateBattleRoom />} />
+        <Route path="/join-battle" element={<JoinBattleRoom />} />
+        {/* Typing Battle Component */}
 
         <Route path="/typingbattle" element={<TypingBattle />} />
       </Routes>
