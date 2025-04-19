@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Keyboard from "./KeyBoard"; // Adjust path if needed
+import axios from "axios"; // You need to have axios installed
 
 const TypingBattle = () => {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ const TypingBattle = () => {
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [hasStartedTyping, setHasStartedTyping] = useState(false);
   const [isTextComplete, setIsTextComplete] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // ⏳ Loading state
+
   const inputRef = useRef(null);
   const textContainerRef = useRef(null);
   const currentCharRef = useRef(null);
@@ -131,23 +134,39 @@ const TypingBattle = () => {
     }, 0);
   };
 
-  const handleReset = () => {
-    setInput("");
-    setTimeLeft(selectedDuration);
-    setIsTimerActive(false);
-    setErrors([]);
-    setHasStartedTyping(false);
-    setIsTextComplete(false);
-    setPressedKey("");
-    inputRef.current?.focus();
-  };
-
   const getKeyboardPressedKey = () => {
     if (isTextComplete && input.length >= text.length) {
       return "";
     }
     return pressedKey;
   };
+
+  // ✅ Send input to backend when time ends
+  useEffect(() => {
+    if (timeLeft === 0 && !isSubmitting) {
+      setIsSubmitting(true);
+      axios
+        .post("/api/typing-battle/result", {
+          typedText: input,
+          duration: selectedDuration,
+        })
+        .then((response) => {
+          const { wpm, accuracy, result } = response.data;
+
+          navigate("/result", {
+            state: {
+              wpm,
+              accuracy,
+              result,
+            },
+          });
+        })
+        .catch((error) => {
+          console.error("Error fetching result:", error);
+          alert("An error occurred while calculating your result.");
+        });
+    }
+  }, [timeLeft, input, selectedDuration, navigate, isSubmitting]);
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-gray-800 text-white font-sans">
@@ -167,26 +186,19 @@ const TypingBattle = () => {
 
         {/* Time selector */}
         <div className="flex justify-center space-x-4 mb-6">
-          <button
-            className={`px-4 py-2 rounded-full font-bold ${
-              selectedDuration === 30
-                ? "bg-purple-600"
-                : "bg-gray-700 hover:bg-gray-600"
-            }`}
-            onClick={() => handleDurationChange(30)}
-          >
-            30s
-          </button>
-          <button
-            className={`px-4 py-2 rounded-full font-bold ${
-              selectedDuration === 60
-                ? "bg-purple-600"
-                : "bg-gray-700 hover:bg-gray-600"
-            }`}
-            onClick={() => handleDurationChange(60)}
-          >
-            60s
-          </button>
+          {[30, 60].map((sec) => (
+            <button
+              key={sec}
+              className={`px-4 py-2 rounded-full font-bold ${
+                selectedDuration === sec
+                  ? "bg-purple-600"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+              onClick={() => handleDurationChange(sec)}
+            >
+              {sec}s
+            </button>
+          ))}
         </div>
 
         {/* Text display */}
@@ -227,22 +239,6 @@ const TypingBattle = () => {
           <Keyboard pressedKey={getKeyboardPressedKey()} />
         </div>
       </div>
-
-      {/* Time's up modal */}
-      {timeLeft === 0 && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-10">
-          <div className="bg-gray-800 p-8 rounded-lg shadow-lg text-center">
-            <h2 className="text-2xl font-bold mb-4">Time's up!</h2>
-            <p className="mb-6">Your results have been recorded.</p>
-            <button
-              className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full"
-              onClick={handleReset}
-            >
-              Try Again
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

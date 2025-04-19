@@ -19,7 +19,6 @@ function App() {
         <Route path="/cardsPage" element={<CardsPage />} />
         <Route path="/battlePage" element={<BattlePageCards />} />
         <Route path="/result" element={<TypingBattleResult />} />
-
         <Route path="/typingbattle" element={<TypingBattle />} />
       </Routes>
     </Router>
