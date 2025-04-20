@@ -7,10 +7,10 @@ function SignUp() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ username: "", name: "", password: "" });
 
-  const handleChange = e =>
-    setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+  const handleChange = (e) =>
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await register(form);
@@ -57,6 +57,7 @@ function SignUp() {
           </div>
           <button
             type="submit"
+            onClick={() => navigate("/login")}
             className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded"
           >
             Sign Up
