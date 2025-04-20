@@ -5,7 +5,8 @@ import axios from "axios"; // You need to have axios installed
 
 const TypingBattle = () => {
   const navigate = useNavigate();
-  const text = "The quick brown fox jumps over the lazy dog.";
+  const text =
+    "The quick brown fox jumps over the lazy dog The quick brown fox jumps over the lazy dog The quick brown fox jumps over the lazy dog  The quick brown fox jumps over the lazy dog The quick brown fox jumps over the lazy dog";
 
   const [selectedDuration, setSelectedDuration] = useState(60);
   const [input, setInput] = useState("");

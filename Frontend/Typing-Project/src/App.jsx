@@ -23,7 +23,6 @@ function App() {
         <Route path="/battle-room" element={<CreateBattleRoom />} />
         <Route path="/join-battle" element={<JoinBattleRoom />} />
         {/* Typing Battle Component */}
-
         <Route path="/typingbattle" element={<TypingBattle />} />
       </Routes>
     </Router>
